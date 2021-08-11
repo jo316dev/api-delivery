@@ -16,9 +16,9 @@ export default{
     },
     actions:{
 
-        loadCategories (context) {
+        loadCategories (context, params) {
             context.commit('CHANGE_PRELOADER', true);
-            axios.get('/api/categories')
+            axios.get('/api/categories', {params})
                     .then(response => {
                         
                         context.commit('LOAD_CATEGORIES', response.data)
@@ -71,6 +71,21 @@ export default{
              })
 
         },
+
+        destroyCategory (context, id) {
+
+            return new Promise((resolve, reject) => {
+
+                context.commit('CHANGE_PRELOADER', true);
+
+                axios.delete(`/api/categories/${id}`)
+                                .then(res => resolve())
+                                .catch(error => reject(error))
+                                .finally(_ => context.commit('CHANGE_PRELOADER', false));
+                                
+            })
+
+        }
 
 
 

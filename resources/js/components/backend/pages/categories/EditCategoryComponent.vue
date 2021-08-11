@@ -9,7 +9,7 @@
            <form-cat 
                 :category="category"
                 :updating="true"
-                :btnName="true"
+               
            ></form-cat>
 
            </div>
@@ -52,9 +52,8 @@ export default {
                                 })
                                 .catch((error) => {
                                  
+                                    console.log(error);
                                     
-                                    this.$snotify.error('Categoria não localizada', '404')
-                                    this.$router.push({name: 'admin.categories'})
                                     
                                 })
         }

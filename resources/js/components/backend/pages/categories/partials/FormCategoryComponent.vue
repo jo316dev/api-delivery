@@ -17,7 +17,7 @@
                        <input type="text" v-model="category.description" placeholder="Descrição da categoria" class="form-control">
                    </div>
 
-                   <button class="btn btn-primary">{{ btnTitle }}</button>
+                   <button class="btn btn-primary">Enviar</button>
                </form>
 
     </div>
@@ -43,16 +43,12 @@ export default {
             type: Boolean,
             default: false
         },
-        btnName:{
-            require: false,
-            type: Boolean,
-            default: false
-        }
+      
     },
 
     data () {
         return{
-            btnTitle: this.btnName ? 'Editar' : 'Cadastrar',
+          
             errors: {},
         }
     },
@@ -68,10 +64,10 @@ export default {
 
             this.$store.dispatch( action, this.category)
                                     .then(() => {
-                                        this.$snotify.success('Cadastrado com Sucesso')
+                                        this.$snotify.success('Sucesso')
                                         this.$router.push({name: 'admin.categories'})
                                     })
-                                    .catch(error => {
+                                    .catch(_ => {
                                         this.$snotify.error('algo deu errado', 'Erro de cadastro')
                                         this.errors = error.response.data.errors
                                     })

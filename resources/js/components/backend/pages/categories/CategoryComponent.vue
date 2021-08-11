@@ -1,7 +1,14 @@
 <template>
     <div class="container">
-        <h3>Categorias Cadastradas</h3>
-        <hr>
+        <div class="row">
+            <div class="col">
+                <h3>Categorias Cadastradas</h3>
+            </div>
+            <div class="col">
+                <search @searchCategory="search"></search>
+            </div>
+        </div>
+      
         <table class="table table-striped">
             <thead>
                 <tr>
@@ -18,6 +25,7 @@
                     <td>{{ category.description}}</td>
                     <td>
                         <router-link :to="{name: 'admin.categories.edit', params: {id: category.id}}" class="btn btn-warning">Editar</router-link>
+                       <button class="btn btn-danger" @click.prevent="confirmDestroy(category)">Remover</button>
                     </td>
                 </tr>
 
@@ -31,19 +39,7 @@
     </div>
 
 
-  <!-- this.$snotify.warning(`Deseja realmente excluir ${item.name}`, "Brabo mesmo?", {
-                timeout: 2500,
-                showProgressBar: true,
-                closeOnClick: true,
-                pauseOnHover: true,
-                buttons: [
-                    {text: 'Não', action: (item) => this.$snotify.remove(item.id)},
-                    {text: 'Sim', action: (value) => {
-                        this.destroy(item)
-                        this.$snotify.remove(value.id)
-                    }}
-                ]
-            }) -->
+
 
 
 </template>
@@ -52,12 +48,19 @@
 
 <script>
 
+import SearchComponent from './partials/SearchComponent.vue';
+
 export default {
 
     created(){
-
-        this.$store.dispatch('loadCategories')
+        this.loadCategories()
         
+    },
+
+    data (){
+        return {
+            filter: ''
+        }
     },
 
   
@@ -66,6 +69,59 @@ export default {
             return this.$store.state.categories.items.data
         }
     },
+
+    methods:{
+
+         loadCategories () {
+            this.$store.dispatch('loadCategories', {name: this.filter})
+        },
+
+        confirmDestroy (category) {
+
+            this.$snotify.error(`Deseja deletar categoria ${category.name}?`, 'Confirmação', {
+                timeout: 2500,
+                showProgressBar: true,
+                closeOnClick: true,
+                pauseOnHover: true,
+                buttons: [
+                    {text: 'Não', action: (category) => this.$snotify.remove(category.id)},
+                    {text: 'Sim', action: (value) => {
+                        this.destroy(category)
+                        this.$snotify.remove(value.id)
+                    }}
+                ]
+
+            })
+
+        },
+
+        destroy (category) {
+            console.log(category)
+            this.$store.dispatch('destroyCategory', category.id)
+                                .then(_ => {
+                                    this.$snotify.success('Sucesso ao deletar')
+                                    this.loadCategories()
+                                })
+                                .catch(error => {
+                                    this.$snotify.error('problemas ao deletar')
+                                })
+            
+
+        },
+
+        search (filter) {
+            this.filter = filter
+
+            this.loadCategories()
+        }
+
+       
+
+    
+    },
+    components:{
+        search: SearchComponent
+    }
 
   
 
