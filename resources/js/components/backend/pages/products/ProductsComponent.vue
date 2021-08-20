@@ -3,7 +3,12 @@
 
         <div class="row">
             <div class="col">
-                <h3>Produtos</h3>
+                <button type="submit" class="btn btn-primary" @click.prevent="showModal = true">Add</button>
+            </div>
+            <div class="col">
+                <search
+                    @search="searchForm"
+                ></search>
             </div>
         </div>
 
@@ -29,32 +34,92 @@
             </tbody>
         </table>
 
+        <paginantor
+            :pagination="products"
+            :offset="6"
+            @paginate="loadProducts"
+        
+        ></paginantor>
+
+        <vodal
+            :show="showModal"
+            animation="fade"
+            @hide="hideModal"
+            :width="600"
+            :height="500"
+        >
+
+        
+            <!-- Modal Product -->
+            <product-form></product-form>
+        
+        </vodal>
+
+   
+
     </div>
 </template>
 
 <script>
 
+import PaginateComponent from '../../../layouts/PaginateComponent.vue';
+import ProductSearchComponent from '../../layouts/SearchComponents.vue';
+import ProductForm from './partials/ProductForm.vue';
+
+import Vodal from 'vodal';
+
 export default {
 
    created () {
-       this.loadProducts()
+       this.loadProducts(1)
+   },
+
+   data () {
+       return {
+
+           filter: '',
+           showModal: false
+       }
    },
 
    computed:{
 
        products () {
            return this.$store.state.products.items
+       },
+
+       params(){
+           return {
+               page: this.products.current_page,
+               filter: this.search,
+           }
        }
 
    },
 
    methods:{
-       loadProducts () {
+       loadProducts (page) {
 
-            this.$store.dispatch('loadProducts')
+            this.$store.dispatch('loadProducts',  {...this.params, page})
 
+       },
+       searchForm(filter){
+
+           this.search = filter
+
+           this.loadProducts(1)
+       },
+       hideModal() {
+           this.showModal = false
        }
    },
+
+   components:{
+       paginantor: PaginateComponent,
+       search: ProductSearchComponent,
+       Vodal,
+       ProductForm,
+   }
   
  
     

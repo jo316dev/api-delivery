@@ -6,11 +6,11 @@ const RESOURCE = 'products';
 
 export default {
 
-    loadProducts (context) {
-        axios.get(`${URL_BASE}${RESOURCE}`)
+    loadProducts (context, params) {
+        axios.get(`${URL_BASE}${RESOURCE}`, {params})
                         .then(response => {
                             
-                            context.commit('CHANGE_PRELOADER', true)
+                            context.commit('CHANGE_PRELOADER', true);
 
                             context.commit('LOAD_PRODUCTS', response.data)
                             console.log(response)

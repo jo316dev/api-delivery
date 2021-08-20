@@ -31,6 +31,7 @@
     "dependencies": {
         "bootstrap": "^5.0.2",
         "bootstrap-vue": "^2.21.2",
+        "vodal": "^2.4.0",
         "vue-router": "^3.5.2",
         "vue-snotify": "^3.2.1",
         "vuex": "^3.6.2"
