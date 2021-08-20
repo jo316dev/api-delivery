@@ -21,7 +21,7 @@ class Product extends Model
     {
         if (!isset($data['filter']) && ! !isset($data['name']) && !isset($data['price']) && !isset($data['description'])){
 
-            return $this->paginate($total);
+            return $this->orderBy('id', 'DESC')->paginate($total);
         }
 
        return $this->where(function($query) use ($data, $value){
@@ -46,6 +46,6 @@ class Product extends Model
                 $query->where('description', 'LIKE', "%{$filter}%");
             }
 
-        })->paginate($total);
+        })->orderBy('id', 'DESC')->paginate($total);
     }
 }
