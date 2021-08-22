@@ -1,3 +1,5 @@
+import axios from "axios"
+
 export default {
     state:{
 
@@ -17,6 +19,8 @@ export default {
 
         loadCategories (context) {
 
+            context.commit('CHANGE_PRELOADER', true)
+
             axios.get('/api/categories')
                             .then(response => {
                                 
@@ -26,7 +30,24 @@ export default {
                             .catch(error => {
                                 console.log(error)
                             })
-        }
+                            .finally(() => {
+                                context.commit('CHANGE_PRELOADER', false)
+                            })
+        },
+
+        storeCategories(context, params){
+
+            return new Promise((resolve, reject) => {
+
+                context.commit('CHANGE_PRELOADER', true)
+                axios.post('/api/categories', params)
+                                .then( response => resolve())
+                                .catch(error => reject(error.response))
+                                .finally(() => context.commit('CHANGE_PRELOADER', false))
+            });
+
+
+        },
 
     }
 }

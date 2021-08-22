@@ -6,7 +6,7 @@
         <link rel="stylesheet" href="{{ mix('css/app.css') }}">
         
 
-        <title>Laravel</title>
+        <title>App Loja</title>
 
       
 

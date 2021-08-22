@@ -16,6 +16,7 @@ window.Vue = require('vue').default;
  */
 
 Vue.component('admin-component', require('./components/backend/AdminComponent.vue').default)
+Vue.component('preloader-component', require('./components/layouts/PreloaderComponent').default)
 
 
 
