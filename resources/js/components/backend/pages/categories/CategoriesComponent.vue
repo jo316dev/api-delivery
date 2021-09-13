@@ -4,7 +4,14 @@
     
     
     
-        <router-link :to="{name: 'admin.categories.create'}" class="btn btn-primary">Cadastar</router-link>
+        <div class="row">
+            <div class="col">
+                <router-link :to="{name: 'admin.categories.create'}" class="btn btn-primary">Cadastar</router-link>
+            </div>
+            <div class="col">
+                <filter-category @searchCategory="searchFilter" />
+            </div>
+        </div>
     
     
         <table class="table table-striped">
@@ -23,8 +30,9 @@
                     <td>{{category.id}}</td>
                     <td>{{category.name}}</td>
                     <td>{{category.description}}</td>
-                    <td>
+                    <td class="btn btn-group">
                         <router-link :to="{name: 'admin.categories.edit', params: {id: category.id}}" class="btn btn-warning">Editar</router-link>
+                        <button class="btn btn-danger" @click.prevent="confirmDestroy(category)">Remover</button>
                     </td>
     
                 </tr>
@@ -37,11 +45,22 @@
 
 
 <script>
+import FilterCategory from './partials/FilterCategory.vue'
+
 export default {
 
     created() {
-        this.$store.dispatch('loadData')
+        this.loadCategories()
     },
+
+
+    data() {
+        return {
+            name: ''
+        }
+    },
+
+
 
 
     computed: {
@@ -53,7 +72,54 @@ export default {
 
     methods: {
 
+        // call all categories 
 
+        loadCategories() {
+            return this.$store.dispatch('loadData', { name: this.name })
+        },
+
+        confirmDestroy(category) {
+
+            this.$snotify.error(`Deseja deletar ${category.name}`, 'Atenção', {
+                timeout: 5000,
+                showProgressBar: true,
+                closeOnClick: true,
+                buttons: [
+                    { text: 'Não', action: () => this.$snotify.remove() },
+                    {
+                        text: 'Sim',
+                        action: () => {
+                            this.destroy(category)
+                            this.$snotify.remove()
+                        }
+                    },
+                ]
+            })
+
+        },
+
+        destroy(category) {
+            this.$store.dispatch('destroyCategory', category.id)
+                .then((result) => {
+                    this.$snotify.success('Sucesso ao Deletar')
+                    this.loadCategories()
+
+
+                }).catch((err) => {
+
+                    this.$snotify.error('Erro ao deletar', 'Atenção')
+
+                });
+        },
+        searchFilter(filter) {
+            this.name = filter
+            this.loadCategories()
+        }
+
+
+    },
+    components: {
+        FilterCategory
     }
 
 
